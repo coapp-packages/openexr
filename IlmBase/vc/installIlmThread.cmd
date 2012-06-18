@@ -1,5 +1,5 @@
 @echo off
-set deploypath=..\..\..\..\..\..\Deploy
+set deploypath=..\..\..\..\..\output
 set src=..\..\..\..\IlmThread
 
 if not exist %deploypath% mkdir %deploypath%
@@ -18,7 +18,7 @@ if not exist %instpath% mkdir %instpath%
 copy ..\%intdir%\IlmThread.dll %instpath%
 
 cd %src%
-set instpath=..\..\..\Deploy\include
+set instpath=..\..\output\include
 mkdir %instpath%
 copy *.h %instpath%
 

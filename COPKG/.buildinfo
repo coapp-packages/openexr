@@ -1,0 +1,192 @@
+/* target information */
+@import "openexr-version.inc";
+@import "ilmbase-version.inc";
+
+#product-info  {
+	product-name: "openexr";
+	version: "";
+	license: "Modified BSD";
+	packager: "Hamish C";
+}
+
+test {
+    set: {
+        COMPILERS="${COMPILERS??vc10}";
+        PLAT="${PLAT??x86,x64}";
+    };
+
+    default : false;
+    uses: release;
+    build-command: @"
+	    rem tests done as part of the build
+    ";
+};
+
+package {
+    set: COMP="${COMP??vc10}";
+    set: PLAT="${PLAT??x86, x64}";
+    default : false;
+    uses : sign;
+    
+    targets: { 
+        @"COPKG\openexr[vc10]-${openexr-version}-x86.msi",
+        @"COPKG\openexr-dev[vc10]-${openexr-version}-x86.msi",
+        @"COPKG\openexr-dev-common-${openexr-version}-any.msi",
+        @"COPKG\openexr[vc10]-${openexr-version}-x64.msi",
+        @"COPKG\openexr-dev[vc10]-${openexr-version}-x64.msi",
+        @"COPKG\ilmbase[vc10]-${ilmbase-version}-x86.msi",
+        @"COPKG\ilmbase-dev[vc10]-${ilmbase-version}-x86.msi",
+        @"COPKG\ilmbase-dev-common-${ilmbase-version}-any.msi",
+        @"COPKG\ilmbase[vc10]-${ilmbase-version}-x64.msi",
+        @"COPKG\ilmbase-dev[vc10]-${ilmbase-version}-x64.msi"
+    };
+    
+    build-command : @"
+        pushd COPKG
+        autopackage openexr-dev-common.autopkg || goto failed
+        autopackage ilmbase-dev-common.autopkg || goto failed
+        
+        for %%A in (${COMP}) do (
+            for %%B in (${PLAT}) do (
+                autopackage --COMP=%%A --PLAT=%%B openexr.autopkg openexr-dev.autopkg || goto failed
+                autopackage --COMP=%%A --PLAT=%%B ilmbase.autopkg ilmbase-dev.autopkg || goto failed
+            )
+        )
+        popd
+        ptk update-version
+    ";
+
+	clean-command: @"del COPKG\*.msi COPKG\*.wixpdb";
+};
+
+update-version {
+    default : false;
+    
+    build-command : @"
+        REM auto-increment version.inc file...
+        
+        pushd COPKG
+        setlocal EnableDelayedExpansion
+        for /F ""tokens=4,5,6,7  delims=.; "" %%v in (ilmbase-version.inc) do (
+            set /a build=%%y + 1
+            set VERSTRING=#define { ilmbase-version: %%v.%%w.%%x.!build!; }
+        )
+        echo !VERSTRING! > ilmbase-version.inc
+        
+        for /F ""tokens=4,5,6,7  delims=.; "" %%v in (openexr-version.inc) do (
+            set /a build=%%y + 1
+            set VERSTRING=#define { openexr-version: %%v.%%w.%%x.!build!; }
+        )
+        echo !VERSTRING! > openexr-version.inc
+        popd
+    ";
+}
+
+release {
+    set: {
+        COMPILERS="${COMPILERS??vc10}";
+        PLAT="${PLAT??x86, x64}";
+        CONFIG="Release";
+    };
+
+    build-command: @"
+        for %%A in (${COMPILERS}) do (
+            for %%B in (${PLAT}) do (
+			    ptk -nologo base --CONFIG=${CONFIG} --COMP=%%A --PLAT=%%B
+		    )
+        )
+    ";
+};
+
+sign {
+    default : false;
+    uses: release;
+    build-command: @"simplesigner.exe --nologo --sign output\**.dll output\**.exe";
+};
+
+x86 {
+    set: PLAT=x86;
+    uses: base;
+};
+
+x64 {
+    set: PLAT=x64;
+    uses: base;
+};
+
+base {
+    set: {
+        CONFIG="${CONFIG??Release}";
+        COMP="${COMP??vc10}";
+        PLAT="${PLAT??x86}";
+    };
+
+    compiler:"${COMP}";
+    platform:"${PLAT}";
+
+    targets: { 
+		"output\${COMP}\${PLAT}\${CONFIG}\bin\exrdisplay.exe",
+        "output\${COMP}\${PLAT}\${CONFIG}\bin\exrenvmap.exe",
+        "output\${COMP}\${PLAT}\${CONFIG}\bin\exrheader.exe",
+        "output\${COMP}\${PLAT}\${CONFIG}\bin\exrmakepreview.exe",
+        "output\${COMP}\${PLAT}\${CONFIG}\bin\exrmaketiled.exe",
+        "output\${COMP}\${PLAT}\${CONFIG}\bin\exrstdattr.exe",
+        "output\${COMP}\${PLAT}\${CONFIG}\bin\playexr.exe",
+        "output\${COMP}\${PLAT}\${CONFIG}\bin\Half.dll",
+        "output\${COMP}\${PLAT}\${CONFIG}\bin\Iex.dll",
+        "output\${COMP}\${PLAT}\${CONFIG}\bin\IlmImf.dll",
+        "output\${COMP}\${PLAT}\${CONFIG}\bin\IlmThread.dll",
+        "output\${COMP}\${PLAT}\${CONFIG}\bin\Imath.dll",
+        "output\${COMP}\${PLAT}\${CONFIG}\bin\Half.lib",
+        "output\${COMP}\${PLAT}\${CONFIG}\bin\Iex.lib",
+        "output\${COMP}\${PLAT}\${CONFIG}\bin\IlmImf.lib",
+        "output\${COMP}\${PLAT}\${CONFIG}\bin\IlmThread.lib",
+        "output\${COMP}\${PLAT}\${CONFIG}\bin\Imath.lib",
+	};
+	
+    build-command:@"
+        REM this makes it so that DLLs can have their own SxS Activation Context in an embedded resource.
+		echo %_CL% | findstr ISOLATION_AWARE || set _CL=%CL% /D ISOLATION_AWARE_ENABLED
+        
+        if exist output\bin rmdir /s /q output\bin > nul 2> nul
+        if exist output\lib rmdir /s /q output\lib > nul 2> nul
+        if exist output\include rmdir /s /q output\include > nul 2> nul
+        
+        mkdir output\${COMP}\${PLAT}\${CONFIG}\bin
+        mkdir output\${COMP}\include
+
+        if ""${PLAT}"" == ""x86"" (
+            msbuild /p:Platform=win32 /p:Configuration=${CONFIG} IlmBase\vc\${COMP}\IlmBase\IlmBase.sln
+            msbuild /p:Platform=win32 /p:Configuration=${CONFIG} OpenEXR\vc\vc10\OpenEXR\OpenEXR.sln
+            msbuild /p:Platform=win32 /p:Configuration=${CONFIG} OpenEXR_Viewers\vc\vc10\OpenEXR_Viewers\OpenEXR_Viewers.sln
+
+            copy output\bin\win32\${CONFIG} output\${COMP}\${PLAT}\${CONFIG}\bin
+            copy output\lib\win32\${CONFIG} output\${COMP}\${PLAT}\${CONFIG}\bin
+            copy output\include output\${COMP}\include
+
+        ) else (
+            msbuild /p:Platform=${PLAT} /p:Configuration=${CONFIG} IlmBase\vc\${COMP}\IlmBase\IlmBase.sln
+            msbuild /p:Platform=${PLAT} /p:Configuration=${CONFIG} OpenEXR\vc\vc10\OpenEXR\OpenEXR.sln
+            msbuild /p:Platform=${PLAT} /p:Configuration=${CONFIG} OpenEXR_Viewers\vc\vc10\OpenEXR_Viewers\OpenEXR_Viewers.sln
+
+            copy output\bin\${PLAT}\${CONFIG} output\${COMP}\${PLAT}\${CONFIG}\bin
+            copy output\lib\${PLAT}\${CONFIG} output\${COMP}\${PLAT}\${CONFIG}\bin
+            copy output\include output\${COMP}\include
+        )
+	";
+    
+    clean-command:@"
+        if ""${PLAT}"" == ""x86"" (
+            msbuild /p:Platform=win32 /p:Configuration=${CONFIG} /target:Clean IlmBase\vc\${COMP}\IlmBase\IlmBase.sln
+            msbuild /p:Platform=win32 /p:Configuration=${CONFIG} /target:Clean OpenEXR\vc\vc10\OpenEXR\OpenEXR.sln
+            msbuild /p:Platform=win32 /p:Configuration=${CONFIG} /target:Clean OpenEXR_Viewers\vc\vc10\OpenEXR_Viewers\OpenEXR_Viewers.sln
+        ) else (
+            msbuild /p:Platform=${PLAT} /p:Configuration=${CONFIG} /target:Clean IlmBase\vc\${COMP}\IlmBase\IlmBase.sln
+            msbuild /p:Platform=${PLAT} /p:Configuration=${CONFIG} /target:Clean OpenEXR\vc\vc10\OpenEXR\OpenEXR.sln
+            msbuild /p:Platform=${PLAT} /p:Configuration=${CONFIG} /target:Clean OpenEXR_Viewers\vc\vc10\OpenEXR_Viewers\OpenEXR_Viewers.sln
+        )
+
+        if exist output rmdir /s /q output > nul 2> nul
+        del /S /Q /A - *.sdf *.suo *.user *.exe *.pdb > nul 2>NUL
+    ";
+};

@@ -1,0 +1,45 @@
+@import "ilmbase-version.inc" ;
+@import "outercurve.inc" ;
+@import "ilmbase-defines.inc";
+
+#define {
+    package-version: "${ilmbase-version}";
+}
+
+package {
+    name: "${pkg-name}-dev-common";
+    version: "${package-version}";
+    arch: any;
+    display-name: "${display-name} Dev Library-common";
+}
+
+metadata {
+    summary: "${display-name} developer library (common)";
+    description: "${product-description}";
+    icon: "${pkg-name}.png"; 
+    author-version : "${author-version}";
+    bug-tracker: "https://github.com/coapp-packages/${pkg-name}/issues";
+    stability : "0";
+    licenses : {
+        "Modified BSD"
+    };
+}
+
+files[headers] {
+    root: @"..\output\vc10\include";
+
+    include: {
+        "half*",
+        "Iex*",
+        "Ilm*",
+        "Imath*",
+    };
+    
+    trim-path:all;
+}
+
+developer-library[${pkg-name}] {
+    headers: { 
+        headers
+    };
+}

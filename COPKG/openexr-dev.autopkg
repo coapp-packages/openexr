@@ -1,0 +1,55 @@
+@import "openexr-version.inc" ;
+@import "outercurve.inc" ;
+@import "openexr-defines.inc";
+
+#define { 
+    flavor: "${COMP??vc10}"; 
+    arch : "${PLAT??x86}";
+    package-version: "${openexr-version}";
+}
+
+package {
+    name: "${pkg-name}-dev[${flavor}]";
+    version: "${package-version}";
+    arch : "${arch}";
+    display-name: "${display-name} Developer library";
+}
+
+metadata {
+    summary: "${display-name} developer library";
+    description: "${product-description}";
+    icon: @"${pkg-name}.png";
+    author-version : "${author-version}";
+    bug-tracker: "https://github.com/coapp-packages/${pkg-name}/issues";
+    stability : "0";
+    licenses : {
+        "Modified BSD"
+    };
+}
+
+files[libs] {
+    root: @"..\output\${flavor}\${arch}\Release\bin";
+    
+    include: {
+        "IlmImf.lib",
+    };
+    
+    trim-path: all;
+};
+
+requires {
+    package: "${pkg-name}-dev-common-${package-version}-any-${Package.PublicKeyToken}";
+    package: "${pkg-name}[${flavor}]-${package-version}-${Package.Architecture}-${Package.PublicKeyToken}";
+    package: "glut-dev[${flavor}]-3.7.0-${Package.Architecture}";
+    package: "glew-dev[${flavor}]-1.7.0-${Package.Architecture}";
+    package: "cg-dev[${flavor}]-3.1.10-${Package.Architecture}";
+    package: "fltk-dev[${flavor}]-1.3.0-${Package.Architecture}";
+    package: "zlib-dev[${flavor}]-1.2.5-${Package.Architecture}";
+    package: "ilmbase-dev[${flavor}]-1.0.2-${Package.Architecture}";
+}
+
+developer-library[${pkg-name}] {
+    libraries : {
+        libs
+    };
+}

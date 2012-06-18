@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>playexr</ProjectName>
+    <ProjectGuid>{CF356ADD-F83F-4A5C-9191-16CF4EC5C31E}</ProjectGuid>
+    <RootNamespace>playexr</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\..\..\playexr;..\..\..\..\..\..\Deploy\include;..\..\..\..\..\..\nvidia\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>OPENEXR_DLL;WIN32;_DEBUG;_CONSOLE;HAVE_CTL_INTERPRETER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>..\..\..\..\..\..\Deploy\lib\Release\IlmCtlSimd.lib ..\..\..\..\..\..\Deploy\lib\Release\IlmImfCtl.lib %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>..\..\..\..\..\..\Deploy\lib\$(IntDir)IlmImfCtl.lib;..\..\..\..\..\..\Deploy\lib\$(IntDir)IlmImf.lib;..\..\..\..\..\..\Deploy\lib\$(IntDir)IlmThread.lib;..\..\..\..\..\..\Deploy\lib\$(IntDir)Imath.lib;..\..\..\..\..\..\Deploy\lib\$(IntDir)Iex.lib;..\..\..\..\..\..\Deploy\lib\$(IntDir)Half.lib;..\..\..\..\..\..\Deploy\lib\$(IntDir)cgGL.lib;..\..\..\..\..\..\Deploy\lib\$(IntDir)cg.lib;..\..\..\..\..\..\nvidia\lib\$(IntDir)glew32.lib;..\..\..\..\..\..\Deploy\lib\$(IntDir)glut32.lib;opengl32.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)playexr.exe</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)playexr.pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>..\..\..\installplayexr.cmd $(IntDir)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\..\..\playexr;..\..\..\..\..\..\Deploy\include;..\..\..\..\..\..\nvidia\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>OPENEXR_DLL;WIN32;NDEBUG;_CONSOLE;HAVE_CTL_INTERPRETER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>..\..\..\..\..\..\Deploy\lib\Release\IlmCtlSimd.lib ..\..\..\..\..\..\Deploy\lib\Release\IlmImfCtl.lib %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>..\..\..\..\..\..\Deploy\lib\$(IntDir)IlmImfCtl.lib;..\..\..\..\..\..\Deploy\lib\$(IntDir)IlmImf.lib;..\..\..\..\..\..\Deploy\lib\$(IntDir)IlmThread.lib;..\..\..\..\..\..\Deploy\lib\$(IntDir)Imath.lib;..\..\..\..\..\..\Deploy\lib\$(IntDir)Iex.lib;..\..\..\..\..\..\Deploy\lib\$(IntDir)Half.lib;..\..\..\..\..\..\Deploy\lib\$(IntDir)cgGL.lib;..\..\..\..\..\..\Deploy\lib\$(IntDir)cg.lib;..\..\..\..\..\..\nvidia\lib\$(IntDir)glew32.lib;..\..\..\..\..\..\Deploy\lib\$(IntDir)glut32.lib;opengl32.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)playexr.exe</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>..\..\..\installplayexr.cmd $(IntDir)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\playexr\ctlToLut.cpp" />
+    <ClCompile Include="..\..\..\..\playexr\fileNameForFrame.cpp" />
+    <ClCompile Include="..\..\..\..\playexr\FileReadingThread.cpp" />
+    <ClCompile Include="..\..\..\..\playexr\ImageBuffers.cpp" />
+    <ClCompile Include="..\..\..\..\playexr\main.cpp" />
+    <ClCompile Include="..\..\..\..\playexr\osDependent.cpp" />
+    <ClCompile Include="..\..\..\..\playexr\playExr.cpp" />
+    <ClCompile Include="..\..\..\..\playexr\Timer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\playexr\ctlToLut.h" />
+    <ClInclude Include="..\..\..\..\playexr\fileNameForFrame.h" />
+    <ClInclude Include="..\..\..\..\playexr\FileReadingThread.h" />
+    <ClInclude Include="..\..\..\..\playexr\ImageBuffers.h" />
+    <ClInclude Include="..\..\..\..\playexr\playExr.h" />
+    <ClInclude Include="..\..\..\..\playexr\Timer.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

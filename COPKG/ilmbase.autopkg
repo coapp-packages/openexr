@@ -1,0 +1,84 @@
+@import "ilmbase-version.inc";
+@import "outercurve.inc";
+@import "ilmbase-defines.inc";
+
+#define { 
+    flavor: "${COMP??vc10}"; 
+    arch : "${PLAT??x86}";
+    package-version: "${ilmbase-version}";
+}
+
+package {
+    name: "${pkg-name}[${flavor}]";
+    version: "${package-version}";
+    arch : "${arch}";
+    display-name: "${display-name}";
+    location: "http://coapp.org/repository/${OutputFilename}";
+    feed: "http://coapp.org/repository/packages.atom.xml";
+    publisher: "CoApp Project";
+}
+
+metadata {
+    summary: "${display-name}";
+    description:  "${product-description}"; 
+    icon: "${pkg-name}.png";
+    author-version : "${author-version}";
+    bug-tracker: "https://github.com/coapp-packages/${pkg-name}/issues";
+    stability : "0";
+    licenses : {
+        "Modified BSD"
+    };
+}
+
+license[BSD] {
+    license-url: "http://www.openexr.com/license.html";
+    license-type: "Modified BSB";
+}
+
+compatability-policy {
+    minimum: "1.0.2";
+    maximum: "${OneLessThanCurrent}"; // this is the default
+    versions : {
+        "1.0",
+    };
+}
+
+files[dlls] {
+    root: @"..\output\${flavor}\${arch}\Release\bin";
+  
+    include: {
+        "Half.dll",
+        "Iex.dll",
+        "IlmThread.dll",
+        "Imath.dll",
+    };
+    
+    trim-path: all;
+};
+
+files[files-to-sign] {
+    include: { 
+        dlls,
+    };    
+}
+
+assembly[${pkg-name}[${flavor}]] {
+    include : {
+        dlls
+    };
+}
+
+signing {
+    attributes : {
+        company="Outercurve Foundation",
+        description="${display-name}",
+        product-name="${display-name}",
+        product-version="${package-version}",
+        file-version="${package-version}",
+    };
+    
+    replace-signature: true; 
+    include: { 
+        files-to-sign
+    };    
+}

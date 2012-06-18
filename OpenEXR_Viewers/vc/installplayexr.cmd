@@ -1,5 +1,5 @@
 @echo off
-set deploypath=..\..\..\..\..\..\Deploy
+set deploypath=..\..\..\..\..\output
 
 if not exist %deploypath% mkdir %deploypath%
 

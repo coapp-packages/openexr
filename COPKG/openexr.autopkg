@@ -1,0 +1,137 @@
+@import "openexr-version.inc";
+@import "outercurve.inc";
+@import "openexr-defines.inc";
+
+#define { 
+    flavor: "${COMP??vc10}"; 
+    arch : "${PLAT??x86}";
+    package-version: "${openexr-version}";
+}
+
+package {
+    name: "${pkg-name}[${flavor}]";
+    version: "${package-version}";
+    arch : "${arch}";
+    display-name: "${display-name}";
+    location: "http://coapp.org/repository/${OutputFilename}";
+    feed: "http://coapp.org/repository/packages.atom.xml";
+    publisher: "CoApp Project";
+}
+
+metadata {
+    summary: "${display-name}";
+    description:  "${product-description}"; 
+    icon: "${pkg-name}.png";
+    author-version : "${author-version}";
+    bug-tracker: "https://github.com/coapp-packages/${pkg-name}/issues";
+    stability : "0";
+    licenses : {
+        "Modified BSD"
+    };
+}
+
+requires {
+    package: "glut[${flavor}]-3.7.0-${Package.Architecture}";
+    package: "glew[${flavor}]-1.7.0-${Package.Architecture}";
+    package: "cg[${flavor}]-3.1.10-${Package.Architecture}";
+    package: "fltk[${flavor}]-1.3.0-${Package.Architecture}";
+    package: "zlib[${flavor}]-1.2.5-${Package.Architecture}";
+    package: "ilmbase[${flavor}]-1.0.2-${Package.Architecture}";
+}
+
+license[Modified BSD] {
+    license-url: "http://www.openexr.com/license.html";
+    license-type: "Modified BSD";
+}
+
+compatability-policy {
+    minimum: "1.7.0";
+    maximum: "${OneLessThanCurrent}"; // this is the default
+    versions : {
+        "1.7",
+    };
+}
+
+files[dlls] {
+    root: @"..\output\${flavor}\${arch}\Release\bin";
+  
+    include: {
+        "IlmImf.dll",
+    };
+    
+    trim-path: all;
+};
+
+files[exes] {
+    root: @"..\output\${flavor}\${arch}\Release\bin";
+  
+    include: {
+        "*.exe",
+    };
+    
+    trim-path: all;
+};
+
+files[files-to-sign] {
+    include: { 
+        dlls,
+        exes
+    };    
+}
+
+assembly[${pkg-name}[${flavor}]] {
+    include : {
+        dlls
+    };
+}
+
+manifest[forassembly] {
+    assembly : {
+        "zlib[${flavor}]",
+    };
+    
+    include : { 
+        dlls
+    };
+}
+
+manifest[forexes] {
+    assembly : {
+        "glut[${flavor}]",
+        "cg[${flavor}]",
+        "fltk[${flavor}]",
+        "glew[${flavor}]",
+    };
+    
+    include : { 
+        exes
+    };
+}
+
+application {
+    include : {
+        exes,
+    };
+}
+
+package-composition {
+    symlinks : { 
+        exes => @"${bin}\${each.Name}" = @"${packagedir}\${each.Name}";
+    };
+}
+
+
+signing {
+    attributes : {
+        company="Outercurve Foundation",
+        description="${display-name}",
+        product-name="${display-name}",
+        product-version="${package-version}",
+        file-version="${package-version}",
+    };
+    
+    replace-signature: true; 
+    include: { 
+        files-to-sign
+    };    
+}

@@ -1,0 +1,1 @@
+IlmImf project in Openexr has a post build task to add the zlib reference to the ilmimf library so the tests can run as part of the build - keep this in mind when upgrading the zlib dependency

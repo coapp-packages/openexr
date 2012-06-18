@@ -1,5 +1,5 @@
 @echo off
-set deploypath=..\..\..\..\..\..\Deploy
+set deploypath=..\..\..\..\..\output
 set src=..\..\..\..\Half
 
 if not exist %deploypath% mkdir %deploypath%
@@ -17,7 +17,7 @@ if not exist %instpath% mkdir %instpath%
 copy ..\%intdir%\Half.dll %instpath%
 
 cd %src%
-set instpath=..\..\..\Deploy\include
+set instpath=..\..\output\include
 if not exist %instpath% mkdir %instpath%
 
 copy half.h %instpath%
