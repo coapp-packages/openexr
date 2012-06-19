@@ -43,13 +43,13 @@ package {
     
     build-command : @"
         pushd COPKG
-        autopackage openexr-dev-common.autopkg || goto failed
         autopackage ilmbase-dev-common.autopkg || goto failed
+        autopackage openexr-dev-common.autopkg || goto failed
         
         for %%A in (${COMP}) do (
             for %%B in (${PLAT}) do (
-                autopackage --COMP=%%A --PLAT=%%B openexr.autopkg openexr-dev.autopkg || goto failed
                 autopackage --COMP=%%A --PLAT=%%B ilmbase.autopkg ilmbase-dev.autopkg || goto failed
+                autopackage --COMP=%%A --PLAT=%%B openexr.autopkg openexr-dev.autopkg || goto failed
             )
         )
         popd

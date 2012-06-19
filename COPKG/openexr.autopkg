@@ -101,6 +101,8 @@ manifest[forexes] {
         "cg[${flavor}]",
         "fltk[${flavor}]",
         "glew[${flavor}]",
+        "${pkg-name}[${flavor}]",
+        "ilmbase[${flavor}]",
     };
     
     include : { 
